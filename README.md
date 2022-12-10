@@ -1,4 +1,4 @@
-# bigdata-k8s
+# Modern Data Stack - K8S
 
 Esse repositório tem como propósito criar uma Modern Data Stack do zero no Kubernetes. As ferramentas utilizadas nesse projeto são:
 
