@@ -320,8 +320,4 @@ Caso não sejam os valores default, use a URL customizada que foi definida.
 
 ---
 
-<<<<<<< HEAD
-Após todos esses procedimentos, seu ambiente Big Data estará funcionando! Espero que isso possa ser útil para vocês! Qualquer sugestão ou crítica construtiva, só avisar!
-=======
 Após todos esses procedimentos, sua Modern Data Stack estará funcionando! Espero que isso possa ser útil para vocês! Qualquer sugestão ou crítica construtiva, só avisar!
->>>>>>> 565d2da (fix readme)
