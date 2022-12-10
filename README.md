@@ -4,16 +4,10 @@ Esse repositório tem como propósito criar um ambiente big data do zero no Kube
 
 - Minio (Data Lake)
 - Airflow (Orquestrador)
-- Apache Kafka (Streaming)
+- Airbyte (EL(T))
 - Hive Metastore (Metadados - Tabelas)
-- Apache Spark on K8S (Processamento Batch e Streaming)
-- JupyterHub (Processamento - Integrado com Apache Spark)
-- Delta (Delta Lake integrado com o Apache Spark e Jupyterhub)
 - Trino (Virtualizacão de dados - Camada SQL)
 - Superset (Data Viz)
-
-Arquitetura do projeto:
-![architecture](https://user-images.githubusercontent.com/40548889/192408947-f7a5dd5f-15ea-4f84-9a26-b9cade482c26.png)
 
 
 Todo esse ambiente foi criado em um cluster Kubernetes local na minha máquina pessoal utilizando o K3D, que utiliza o Docker para simular um cluster Kubernetes multi-node rodando em containers. Porém, todos os manifestos e helm charts criados nesse repositório podem ser utilizados em servicos gerenciados de Kubernetes de Cloud Providers (EKS, GKE, AKS), os únicos pré-requisitos seriam os seguintes:
