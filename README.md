@@ -9,6 +9,9 @@ Esse repositório tem como propósito criar um ambiente big data do zero no Kube
 - Trino (Virtualizacão de dados - Camada SQL)
 - Superset (Data Viz)
 
+![architecture-mds](https://user-images.githubusercontent.com/40548889/206874326-636d6f6f-aa04-4e6c-bb0e-e2e7df70a09f.png)
+
+
 
 Todo esse ambiente foi criado em um cluster Kubernetes local na minha máquina pessoal utilizando o K3D, que utiliza o Docker para simular um cluster Kubernetes multi-node rodando em containers. Porém, todos os manifestos e helm charts criados nesse repositório podem ser utilizados em servicos gerenciados de Kubernetes de Cloud Providers (EKS, GKE, AKS), os únicos pré-requisitos seriam os seguintes:
 - [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) configurado
