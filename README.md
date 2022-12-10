@@ -1,13 +1,14 @@
 # bigdata-k8s
 
-Esse repositório tem como propósito criar um ambiente big data do zero no Kubernetes. As ferramentas utilizadas nesse projeto são:
+Esse repositório tem como propósito criar uma Modern Data Stack do zero no Kubernetes. As ferramentas utilizadas nesse projeto são:
 
 - Minio (Data Lake)
 - Airflow (Orquestrador)
 - Airbyte (EL(T))
 - Hive Metastore (Metadados - Tabelas)
-- Trino (Virtualizacão de dados - Camada SQL)
+- Trino (Virtualizacão de dados - SQL)
 - Superset (Data Viz)
+- Trino + Minio (Data Lakehouse)
 
 ![architecture-mds](https://user-images.githubusercontent.com/40548889/206874326-636d6f6f-aa04-4e6c-bb0e-e2e7df70a09f.png)
 
@@ -156,6 +157,20 @@ bash create-configmap.sh
 Após isso, execute os comandos usando `kubectl` descritos no ínicio desse tópico.
 
 ---
+# Airbyte
+O Airbyte é uma ferramenta de EL(T), que a partir de uma interface simples e intuitiva, permite fazer a ingestão de dados de diversas fontes diferentes.
+Para instalá-lo, a partir do diretório raiz do projeto, execute os seguintes comandos:
+```
+cd airbyte
+bash install-airbyte.sh
+```
+Se os valores utilizados de ingress forem os defaults configurados nesse repositório, tente acessar no seu navegador a seguinte URL para validar se o Trino está funcionando:
+
+`http://airbyte.silveira.com`
+
+Caso não sejam os valores default, use a URL customizada que foi definida.
+
+---
 # Trino
 O Trino é uma ferramenta de virtualizacão de dados que usa a linguagem SQL para interagir com diversas fontes de dados. Nesse tutorial, o Trino vai estar configurado com o Hive Metastore e com o Delta para se interagir com os dados armazenados no Minio.
 Para instalá-lo, a partir do diretório raiz do projeto, execute os seguintes comandos:
@@ -170,6 +185,69 @@ Se os valores utilizados de ingress forem os defaults configurados nesse reposit
 Caso não sejam os valores default, use a URL customizada que foi definida.
 
 Obs: Caso você não esteja utilizando o usuário e senha padrões definidos nesse tutorial para o Minio, você deve modificar os parâmetros de Access Key e Secret Key dentro do arquivo values.yaml para os conectores do Hive Metastore e do Delta Lake.
+
+---
+# DBT (Data Build Tool)
+O DBT é uma ferramenta de transformação de dados. Ela permite a criação de pipelines de transformação utilizando a Linguagem SQL. O DBT utiliza o poder de processamento do Data Warehouse/Lakeshouse no qual está conectado para executar todas as suas tarefas.
+
+Nesse ambiente, as pipelines do DBT (models) serão executadas pelo Airflow (semelhante ao SparkOnK8s Operator). Para que isso seja possível, para todo projeto de DBT, uma imagem Docker será criada com todo o projeto e o Airflow a executurá utilizando o KubernetesPodOperator.
+
+Para criar a imagem, siga os seguintes passos (nesse projeto tem uma imagem de exemplo, mas os steps serão os mesmos para qualquer outro projeto):
+
+- Crie a imagem base do DBT, utilizando o Adapter do Data Warehouse/Lakehouse que será utilizado. No nosso caso, será o Trino, então para criar a imagem, eu usei como base um Dockerfile fornecido pela própria DBT.
+```
+$ cd dbt/build-dbt-trino
+$ docker build --tag guisilveira/dbt-trino \
+  --target dbt-third-party \
+  --build-arg dbt_third_party=dbt-trino \
+  --build-arg dbt_core_ref=dbt-core@1.2.latest \
+  .
+```
+- Crie o seu projeto DBT. Eu usei o exemplo fornecido pela própria DBT, mas fique a vontade para criar o seu. Nesse caso, eu criei o mesmo projeto duas vezes, porém com uma pequena diferença, a tabela final em um deles será criada no formato Delta e a outra no formato Iceberg (esse ambiente suporta ambas tecnologias, então escolha a que mais sentido para o seu use case, nesse exemplo, vou mostrar os comandos simulando o uso do Iceberg)
+```
+Instale o dbt-core na sua máquina local ou use uma imagem docker com um volume montado apontando para um diretório local e execute o seguinte comando
+
+$ dbt init jaffle_shop_iceberg
+```
+
+- Modifique os arquivos dbt_project.yml e crie seus models no diretório models de acordo com seu use case (ou simplesmente use o exemplo que já está pronto)
+
+- Crie o arquivo profiles.yml (no nosso caso, profiles_iceberg.yml). Esse arquivo vai definir as configurações necessárias para conectar o DBT ao Trino
+``` yml
+jaffle_shop:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      user: trino
+      host: tcb-trino
+      port: 8080
+      catalog: iceberg
+      schema: transformed
+      threads: 8
+      http_scheme: http
+      session_properties:
+        query_max_run_time: 4h
+        exchange_compression: True
+```
+- Após essas etapas, crie a imagem Docker que será executada pelo Airflow, usando a nossa imagem do dbt-trino que foi criada anteriormente como base (Dockerfile-iceberg):
+``` Dockerfile
+FROM guisilveira/dbt-trino
+
+COPY ./jaffle_shop_iceberg/ /usr/app/
+
+COPY ./profiles_iceberg.yml /root/.dbt/profiles.yml
+
+CMD [ "run" ]
+```
+```
+$ docker build -t guisilveira/dbt-jaffle-shop-iceberg -f ./Dockerfile-iceberg .
+$ docker push guisilveira/dbt-jaffle-shop-iceberg
+```
+
+OBS: eu estou utilizando o repo `guisilveira` nas minhas imagens Docker pois é meu repo pessoal, mas no ambiente de vocês, mude para o seu repo pessoal/enterprise.
+
+No diretório `examples` desse repo, haverá uma dag de exemplo que fará a ingestão usando o Airbyte e usa essa imagem que acabamos de criar para processar os dados utilizando o DBT
 
 ---
 # Airflow
@@ -242,4 +320,8 @@ Caso não sejam os valores default, use a URL customizada que foi definida.
 
 ---
 
+<<<<<<< HEAD
 Após todos esses procedimentos, seu ambiente Big Data estará funcionando! Espero que isso possa ser útil para vocês! Qualquer sugestão ou crítica construtiva, só avisar!
+=======
+Após todos esses procedimentos, sua Modern Data Stack estará funcionando! Espero que isso possa ser útil para vocês! Qualquer sugestão ou crítica construtiva, só avisar!
+>>>>>>> 565d2da (fix readme)
