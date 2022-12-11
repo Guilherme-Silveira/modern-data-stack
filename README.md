@@ -170,24 +170,8 @@ Se os valores utilizados de ingress forem os defaults configurados nesse reposit
 Caso não sejam os valores default, use a URL customizada que foi definida.
 
 ---
-# Trino
-O Trino é uma ferramenta de virtualizacão de dados que usa a linguagem SQL para interagir com diversas fontes de dados. Nesse tutorial, o Trino vai estar configurado com o Hive Metastore e com o Delta para se interagir com os dados armazenados no Minio.
-Para instalá-lo, a partir do diretório raiz do projeto, execute os seguintes comandos:
-```
-cd trino
-bash install-trino.sh
-```
-Se os valores utilizados de ingress forem os defaults configurados nesse repositório, tente acessar no seu navegador a seguinte URL para validar se o Trino está funcionando:
-
-`http://trino.silveira.com`
-
-Caso não sejam os valores default, use a URL customizada que foi definida.
-
-Obs: Caso você não esteja utilizando o usuário e senha padrões definidos nesse tutorial para o Minio, você deve modificar os parâmetros de Access Key e Secret Key dentro do arquivo values.yaml para os conectores do Hive Metastore e do Delta Lake.
-
----
 # DBT (Data Build Tool)
-O DBT é uma ferramenta de transformação de dados. Ela permite a criação de pipelines de transformação utilizando a Linguagem SQL. O DBT utiliza o poder de processamento do Data Warehouse/Lakeshouse no qual está conectado para executar todas as suas tarefas.
+O DBT é uma ferramenta de transformação de dados. Ela permite a criação de pipelines de transformação utilizando a Linguagem SQL. O DBT utiliza o poder de processamento do Data Warehouse/Lakehouse no qual está conectado para executar todas as suas tarefas.
 
 Nesse ambiente, as pipelines do DBT (models) serão executadas pelo Airflow (semelhante ao SparkOnK8s Operator). Para que isso seja possível, para todo projeto de DBT, uma imagem Docker será criada com todo o projeto e o Airflow a executurá utilizando o KubernetesPodOperator.
 
@@ -247,6 +231,24 @@ $ docker push guisilveira/dbt-jaffle-shop-iceberg
 OBS: eu estou utilizando o repo `guisilveira` nas minhas imagens Docker pois é meu repo pessoal, mas no ambiente de vocês, mude para o seu repo pessoal/enterprise.
 
 No diretório `examples` desse repo, haverá uma dag de exemplo que fará a ingestão usando o Airbyte e usa essa imagem que acabamos de criar para processar os dados utilizando o DBT
+
+---
+# Trino
+O Trino é uma ferramenta de virtualizacão de dados que usa a linguagem SQL para interagir com diversas fontes de dados. Nesse tutorial, o Trino vai estar configurado com o Hive Metastore, Delta e Iceberg para se interagir com os dados armazenados no Minio.
+Para instalá-lo, a partir do diretório raiz do projeto, execute os seguintes comandos:
+```
+cd trino
+bash install-trino.sh
+```
+Se os valores utilizados de ingress forem os defaults configurados nesse repositório, tente acessar no seu navegador a seguinte URL para validar se o Trino está funcionando:
+
+`http://trino.silveira.com`
+
+Caso não sejam os valores default, use a URL customizada que foi definida.
+
+Obs: Caso você não esteja utilizando o usuário e senha padrões definidos nesse tutorial para o Minio, você deve modificar os parâmetros de Access Key e Secret Key dentro do arquivo values.yaml para os conectores do Hive Metastore e do Delta Lake.
+
+Há um exemplo no diretório `examples` desse repo com todas as tabelas que precisam ser criadas no Trino para que seja possível a execução do Job no DBT com o exemplo fornecido do Jaffle Shop.
 
 ---
 # Airflow
