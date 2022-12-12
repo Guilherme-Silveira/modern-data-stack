@@ -250,6 +250,9 @@ Obs: Caso você não esteja utilizando o usuário e senha padrões definidos nes
 
 Há um exemplo no diretório `examples` desse repo com todas as tabelas que precisam ser criadas no Trino para que seja possível a execução do Job no DBT com o exemplo fornecido do Jaffle Shop.
 
+Credenciais:
+- Usuário: trino
+
 ---
 # Airflow
 O Apache Airflow é uma ferramenta de orquestracão de jobs muito usado no contexto de pipelines de ingestão Big Data. 
@@ -307,6 +310,10 @@ Caso não sejam os valores default, use a URL customizada que foi definida.
 
 Há um exemplo no diretório `examples` desse repo em como construir uma dag chamando as connections do Airbyte e executando um Pod no Kubernetes com o seu projeto DBT.
 
+Credenciais: 
+  - Usuário: admin
+  - Senha: admin
+
 ---
 # Superset
 O Apache Superset é uma ferramenta de visualizacão de dados. Para instalá-la, a partir do diretório raiz, execute os seguintes comandos:
@@ -320,6 +327,10 @@ Se os valores utilizados de ingress forem os defaults configurados nesse reposit
 `http://superset.silveira.com`
 
 Caso não sejam os valores default, use a URL customizada que foi definida.
+
+Credenciais:
+  - Usuário: admin
+  - Senha: admin
 
 ---
 
