@@ -169,6 +169,13 @@ Se os valores utilizados de ingress forem os defaults configurados nesse reposit
 
 Caso não sejam os valores default, use a URL customizada que foi definida.
 
+Seu funcionamento é muito simples. Todas as ingestões devem ser feitas na UI (super interativa por sinal), definindo `sources` e `destinations`. Depois de definir ambos, será necessário conectar ambos, para isso é necessário criar uma `connection` (defina o trigger da connection como `manual`, pois quem a executará será o Airflow). Feito o isso o Airbyte vai "coletar" os dados do `source` e enviar para a `destination`.
+
+OBS: Para rodar essa connection no Airflow mais adiante, será necessário o ID da connection. Para isso, na UI, clique na connection criada. O seu ID será mostrado na URL como no exemplo abaixo:
+
+
+No caso desse exemplo, o ID da connection é: `110a8c4a-b973-4c94-aeb8-0c0d5e5573b0`
+
 ---
 # DBT (Data Build Tool)
 O DBT é uma ferramenta de transformação de dados. Ela permite a criação de pipelines de transformação utilizando a Linguagem SQL. O DBT utiliza o poder de processamento do Data Warehouse/Lakehouse no qual está conectado para executar todas as suas tarefas.
